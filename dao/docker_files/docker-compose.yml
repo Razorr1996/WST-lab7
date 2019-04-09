@@ -1,0 +1,10 @@
+version: '3'
+services:
+  db:
+    image: postgres
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:5432:5432"
+    environment:
+      POSTGRES_DB: wst
+      POSTGRES_PASSWORD: real_pass_ololo

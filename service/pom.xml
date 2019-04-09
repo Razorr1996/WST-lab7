@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>lab7</artifactId>
+        <groupId>ru.basa62.wst</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>service</artifactId>
+
+    <properties>
+        <client.books.artifactName>${project.artifactId}-${project.version}-client</client.books.artifactName>
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>jaxws-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>gen-wdsl</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>wsgen</goal>
+                        </goals>
+                        <configuration>
+                            <genWsdl>true</genWsdl>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>build-client-jar</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>wsimport</goal>
+                        </goals>
+                        <configuration>
+                            <args>
+                                <arg>-clientjar</arg>
+                                <arg>${project.build.directory}/${client.books.artifactName}.jar</arg>
+                            </args>
+                            <destDir>${project.build.directory}/jaxws-client-classes</destDir>
+                            <xnocompile>false</xnocompile>
+                            <wsdlFiles>
+                                <wsdlFile>
+                                    ${project.build.directory}/generated-sources/wsdl/BooksService.wsdl
+                                </wsdlFile>
+                            </wsdlFiles>
+                            <packageName>ru.basa62.wst.lab7.ws.client</packageName>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-client-jar</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>attach-artifact</goal>
+                        </goals>
+                        <configuration>
+                            <artifacts>
+                                <artifact>
+                                    <file>${project.build.directory}/${client.books.artifactName}.jar</file>
+                                    <type>jar</type>
+                                    <classifier>client</classifier>
+                                </artifact>
+                            </artifacts>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>ru.basa62.wst</groupId>
+            <artifactId>dao</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax</groupId>
+            <artifactId>javaee-api</artifactId>
+        </dependency>
+    </dependencies>
+</project>
